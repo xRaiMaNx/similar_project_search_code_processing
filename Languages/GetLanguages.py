@@ -7,7 +7,7 @@ def get_languages(path, k=1):
     :param k: desired amount of most popular languages
     :return: list of pairs [rate, language] of no more than k most popular languages
     """
-    cmd = "./enry -prog " + path
+    cmd = "./Languages/enry -prog " + path
     p = subprocess.Popen(cmd, shell=True, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     stats = []
     i = 0

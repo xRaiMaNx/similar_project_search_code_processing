@@ -1,6 +1,5 @@
-import GetLanguages
+from Languages import GetLanguages
 
 path = input()  # enter path of project
 stats = GetLanguages.get_languages(path)
-if stats:
-    print(stats[0][1])
+print(stats)
