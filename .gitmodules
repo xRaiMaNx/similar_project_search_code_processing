@@ -1,0 +1,3 @@
+[submodule "Imports/buckwheat"]
+	path = Imports/buckwheat
+	url = https://github.com/dkshtakin/buckwheat
