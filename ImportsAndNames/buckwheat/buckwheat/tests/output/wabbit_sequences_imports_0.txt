@@ -1,8 +1,0 @@
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_python/Languages/GetLanguages.py#L1-L1 subprocess
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_python/some_code.py#L1-L1 Languages GetLanguages
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_python/some_code.py#L2-L2 time
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_python/some_code.py#L3-L3 os some_lib
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_python/some_code.py#L4-L4 division
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_cpp/test.cpp#L1-L2 <iostream>
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_cpp/test.cpp#L2-L3 <algorithm>
-/home/raiman/similar-project-search/parse-for-similar-project/Imports/buckwheat/buckwheat/tests/input_cpp/test.cpp#L3-L5 <thread>
