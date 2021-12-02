@@ -7,7 +7,6 @@ def remove_file(path: str):
     :param path: path of file which should be removed
     """
     if os.path.exists(path):
-        #p = os.path.join(os.path.abspath(os.path.dirname(__file__)), path)
         os.remove(path)
 
 
@@ -21,9 +20,9 @@ def get_imports(path: str):
     cmd = "cd Imports/buckwheat && python3 -m buckwheat.run --local -i ../path.txt -o ../ -g imports"
     os.system(cmd)
     imports = set()
+    remove_file("Imports/path.txt")
     with open('Imports/wabbit_sequences_imports_0.txt', 'r', encoding='utf-8') as r:
         for line in r:
             imports.add(line.strip())
-    remove_file("Imports/path.txt")
     remove_file("Imports/wabbit_sequences_imports_0.txt")
     return imports
