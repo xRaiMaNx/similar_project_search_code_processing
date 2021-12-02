@@ -1,0 +1,4 @@
+/buckwheat/parsing/build/*
+!buckwheat/parsing/build/.gitkeep
+/buckwheat/language_recognition/build/*
+!buckwheat/language_recognition/build/.gitkeep
