@@ -1,0 +1,4 @@
+[submodule "ImportsAndNames/buckwheat"]
+	path = ImportsAndNames/buckwheat
+	url = https://github.com/dkshtakin/buckwheat.git
+	ignore = dirty
