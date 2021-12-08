@@ -1,9 +1,11 @@
 from Languages import GetLanguages
 from ImportsAndNames import GetImports
 from ImportsAndNames import GetNames
+from ImportsAndNames import Utils
 from threading import Thread
-import os
 import json
+import os
+import subprocess
 import time
 
 
@@ -23,14 +25,27 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def get_json(path: str):
+def get_json(path: str, as_url: bool = False):
     """
-    :param path: path to file ( ~ doesn't work with os )
+    :param path: 1) path to file ( ~ doesn't work with os ) or 2) url to github repository
+    :param as_url: False (default) - path is treated as 1), True - path is treated as 2)
     :return: json dump
     """
+
+    if as_url:
+        os.mkdir('repos')
+        cmd = "(cd repos && git clone " + path + ")"
+        p = subprocess.Popen(cmd, shell=True, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        for line in p.stdout.readlines():
+            print(line)
+        path = path.split("/")[-1]
+        if path.endswith(".git"):
+            path = path[:-4]
+        path = os.path.abspath(os.getcwd()) + "/repos/" + path
+
     if not os.path.exists(path):
         raise FileNotFoundError("Incorrect path")
-
+        
     repo_name = path.split("/")[-1]
 
     lang_thread = ThreadWithReturnValue(target=GetLanguages.get_languages, args=(path, 20,))
@@ -48,6 +63,9 @@ def get_json(path: str):
     # imports = GetImports.get_imports(path)
     # names = GetNames.get_names(path)
 
+    if as_url:
+        Utils.remove_dir(os.path.abspath(os.getcwd()) + "/repos/")
+
     languages = []
     percentages = []
     for percentage, language in stats:
@@ -63,5 +81,5 @@ def get_json(path: str):
 
 
 start_time = time.time()
-print(get_json("/home/raiman/mlflow"))
+print(get_json("https://github.com/dkshtakin/buckwheat.git", True))
 print("--- %s seconds ---" % (time.time() - start_time))
