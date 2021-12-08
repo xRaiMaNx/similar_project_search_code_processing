@@ -45,7 +45,7 @@ def get_json(path: str, as_url: bool = False):
 
     if not os.path.exists(path):
         raise FileNotFoundError("Incorrect path")
-
+        
     repo_name = path.split("/")[-1]
 
     lang_thread = ThreadWithReturnValue(target=GetLanguages.get_languages, args=(path, 20,))
