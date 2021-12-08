@@ -2,7 +2,7 @@ from .ImportsAndNames import Utils
 from .Languages import GetLanguages
 from .ImportsAndNames import GetImports
 from .ImportsAndNames import GetNames
-from threading import Thread
+from .threading import Thread
 import json
 import os
 import subprocess
@@ -31,6 +31,8 @@ def get_json(path: str, as_url: bool = False):
     :param as_url: False (default) - path is treated as 1), True - path is treated as 2)
     :return: json dump
     """
+
+    repo_name = ""
     if as_url:
         if not os.path.exists('repos'):
             os.mkdir('repos')
@@ -38,14 +40,17 @@ def get_json(path: str, as_url: bool = False):
         p = subprocess.Popen(cmd, shell=True, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         for line in p.stdout.readlines():
             print(line)
-        path = path.split("/")[-1]
         if path.endswith(".git"):
             path = path[:-4]
+        repo_name = path
+        path = path.split("/")[-1]
         path = os.path.abspath(os.getcwd()) + "/repos/" + path
 
     if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
-    repo_name = path.split("/")[-1]
+
+    if not as_url:
+        repo_name = path.split("/")[-1]
 
     lang_thread = ThreadWithReturnValue(target=GetLanguages.get_languages, args=(path, 20,))
     import_thread = ThreadWithReturnValue(target=GetImports.get_imports, args=(path,))
@@ -77,4 +82,3 @@ def get_json(path: str, as_url: bool = False):
     return json.dumps(
         {"repo_name:": repo_name, "languages": languages, "percentages": percentages, "imports": list(imports),
          "names": list(names)})
-
