@@ -1,13 +1,5 @@
+from . import Utils
 import os
-
-
-def remove_file(path: str):
-    """
-    must be used for removing path.txt and wabbit_sequences_names_0.txt
-    :param path: path of file which should be removed
-    """
-    if os.path.exists(path):
-        os.remove(path)
 
 
 def get_names(path: str):
@@ -20,10 +12,10 @@ def get_names(path: str):
     cmd = "cd ImportsAndNames/buckwheat && python3 -m buckwheat.run --local -i ../path.txt -o ../ -g names"
     os.system(cmd)
     names = set()
-    remove_file("ImportsAndNames/path.txt")
+    Utils.remove_file("ImportsAndNames/path.txt")
     with open('ImportsAndNames/wabbit_sequences_names_0.txt', 'r', encoding='utf-8') as r:
         for line in r:
             for i in line.strip().split():
                 names.add(i)
-    remove_file("ImportsAndNames/wabbit_sequences_names_0.txt")
+    Utils.remove_file("ImportsAndNames/wabbit_sequences_names_0.txt")
     return names
