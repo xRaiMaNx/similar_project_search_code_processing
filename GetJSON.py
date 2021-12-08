@@ -1,7 +1,7 @@
-from Languages import GetLanguages
-from ImportsAndNames import GetImports
-from ImportsAndNames import GetNames
-from ImportsAndNames import Utils
+from .ImportsAndNames import Utils
+from .Languages import GetLanguages
+from .ImportsAndNames import GetImports
+from .ImportsAndNames import GetNames
 from threading import Thread
 import json
 import os
@@ -10,8 +10,8 @@ import time
 
 
 class ThreadWithReturnValue(Thread):
-    def __init__(self, group=None, target=None, name=None,
-                 args=(), kwargs={}):
+    def __init__(self, group = None, target = None, name = None,
+                 args = (), kwargs = {}):
         Thread.__init__(self, group, target, name, args, kwargs)
         self._return = None
 
@@ -44,8 +44,7 @@ def get_json(path: str, as_url: bool = False):
         path = os.path.abspath(os.getcwd()) + "/repos/" + path
 
     if not os.path.exists(path):
-        raise FileNotFoundError("Incorrect path")
-        
+        raise FileNotFoundError(path, "is incorrect path")
     repo_name = path.split("/")[-1]
 
     lang_thread = ThreadWithReturnValue(target=GetLanguages.get_languages, args=(path, 20,))
@@ -64,7 +63,7 @@ def get_json(path: str, as_url: bool = False):
     # names = GetNames.get_names(path)
 
     if as_url:
-        Utils.remove_dir(os.path.abspath(os.getcwd()) + "/repos/")
+        Utils.remove_dir(path)
 
     languages = []
     percentages = []
@@ -79,7 +78,3 @@ def get_json(path: str, as_url: bool = False):
         {"repo_name:": repo_name, "languages": languages, "percentages": percentages, "imports": list(imports),
          "names": list(names)})
 
-
-start_time = time.time()
-print(get_json("https://github.com/dkshtakin/buckwheat.git", True))
-print("--- %s seconds ---" % (time.time() - start_time))
