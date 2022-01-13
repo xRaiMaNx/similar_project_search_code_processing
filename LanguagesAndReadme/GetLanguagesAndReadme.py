@@ -22,13 +22,8 @@ def get_languages_and_readme(path, k=1):
         stats.append(line.strip().split('\t'))
         i += 1
     readme = []
-    if 'Markdown\n' in lines:
-        for i in range(lines.index('Markdown\n') + 1, len(lines)):
-            if lines[i] == "\n":
-                break
-            readme.append(lines[i].strip("\n"))
-    if 'reStructuredText\n' in lines:
-        for i in range(lines.index('reStructuredText\n') + 1, len(lines)):
+    if 'Documentation\n' in lines:
+        for i in range(lines.index('Documentation\n') + 1, len(lines)):
             if lines[i] == "\n":
                 break
             readme.append(lines[i].strip("\n"))
