@@ -1,7 +1,7 @@
-from .ImportsAndNames import Utils
+from .CodeData import Utils
 from .LanguagesAndReadme import GetLanguagesAndReadme
-from .ImportsAndNames import GetImports
-from .ImportsAndNames import GetNames
+from .CodeData import GetImports
+from .CodeData import GetNames
 from threading import Thread
 import json
 import os
@@ -38,15 +38,16 @@ def get_json(path: str, as_url: bool = False):
         cmd = "(cd repos && git clone " + path + ")"
         p = subprocess.Popen(cmd, shell=True, universal_newlines=True,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        for line in p.stdout.readlines():
-            print(line)
+        print(path)
         if path.endswith(".git"):
             path = path[:-4]
         repo_name = path
         path = path.split("/")[-1]
+        print(path)
         path = os.path.abspath(os.getcwd()) + "/repos/" + path
+        print(path)
 
-    if not os.path.exists(path):
+    if not as_url and not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
 
     if not as_url:
@@ -66,9 +67,6 @@ def get_json(path: str, as_url: bool = False):
     [stats, readme] = lang_and_readme_thread.join()
     imports = import_thread.join()
     names = name_thread.join()
-    # stats = GetLanguages.get_languages(path, 20)
-    # imports = GetImports.get_imports(path)
-    # names = GetNames.get_names(path)
 
     readme_content = []
 
@@ -84,9 +82,6 @@ def get_json(path: str, as_url: bool = False):
     for percentage, language in stats:
         percentages.append(percentage.strip("%"))
         languages.append(language)
-
-    # with open(repo_name + ".json", 'w') as f:
-    # json.dump({"repo_name:": repo_name, "languages": languages, "percentages": percentages, "imports": list(imports)}, f)
 
     return json.dumps(
         {"repo_name": repo_name, "readme": readme_content, "languages": languages,

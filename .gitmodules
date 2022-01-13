@@ -1,4 +1,4 @@
 
 [submodule "ImportsAndNames/buckwheat"]
-	path = ImportsAndNames/buckwheat
+	path = CodeData/buckwheat
 	url = https://github.com/dkshtakin/buckwheat

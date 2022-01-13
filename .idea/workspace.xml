@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="7c34f360-b8f7-437f-b34f-192a3667fbcd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GetJSON.py" beforeDir="false" afterPath="$PROJECT_DIR$/GetJSON.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImportsAndNames/GetImports.py" beforeDir="false" afterPath="$PROJECT_DIR$/ImportsAndNames/GetImports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImportsAndNames/GetNames.py" beforeDir="false" afterPath="$PROJECT_DIR$/ImportsAndNames/GetNames.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LanguagesAndReadme/GetLanguagesAndReadme.py" beforeDir="false" afterPath="$PROJECT_DIR$/LanguagesAndReadme/GetLanguagesAndReadme.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LanguagesAndReadme/enry" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="23ehD31WOPo5e6ZziN9FJFCgPsS" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/CodeData" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7c34f360-b8f7-437f-b34f-192a3667fbcd" name="Changes" comment="" />
+      <created>1642100337978</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1642100337978</updated>
+      <workItem from="1642100340437" duration="4090000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+    <option name="exactExcludedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/CodeData/buckwheat/buckwheat/tests/test_files/test.js" />
+      </list>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/pfsp$GetJSON.coverage" NAME="GetJSON Coverage Results" MODIFIED="1642103052133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>
