@@ -2,6 +2,7 @@ from .CodeData import Utils
 from .LanguagesAndReadme import GetLanguagesAndReadme
 from .CodeData import GetImports
 from .CodeData import GetNames
+from .CodeData import GetDocstrings
 from threading import Thread
 import json
 import os
@@ -38,16 +39,14 @@ def get_json(path: str, as_url: bool = False):
         cmd = "(cd repos && git clone " + path + ")"
         p = subprocess.Popen(cmd, shell=True, universal_newlines=True,
                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        print(path)
+        p.wait()
         if path.endswith(".git"):
             path = path[:-4]
         repo_name = path
         path = path.split("/")[-1]
-        print(path)
         path = os.path.abspath(os.getcwd()) + "/repos/" + path
-        print(path)
 
-    if not as_url and not os.path.exists(path):
+    if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
 
     if not as_url:
@@ -59,14 +58,18 @@ def get_json(path: str, as_url: bool = False):
         target=GetImports.get_imports, args=(path,))
     name_thread = ThreadWithReturnValue(
         target=GetNames.get_names, args=(path,))
+    docstring_thread = ThreadWithReturnValue(
+        target=GetDocstrings.get_docstrings, args=(path,))
 
     lang_and_readme_thread.start()
     import_thread.start()
     name_thread.start()
+    docstring_thread.start()
 
     [stats, readme] = lang_and_readme_thread.join()
     imports = import_thread.join()
     names = name_thread.join()
+    docstrings = docstring_thread.join()
 
     readme_content = []
 
@@ -74,8 +77,7 @@ def get_json(path: str, as_url: bool = False):
         with open(path + "/" + filename, 'r') as file:
             readme_content.append(file.read())
 
-    if as_url:
-        Utils.remove_dir(path)
+    print(readme)
 
     languages = []
     percentages = []
@@ -83,7 +85,10 @@ def get_json(path: str, as_url: bool = False):
         percentages.append(percentage.strip("%"))
         languages.append(language)
 
+    if as_url:
+        Utils.remove_dir(path)
+
     return json.dumps(
         {"repo_name": repo_name, "readme": readme_content, "languages": languages,
          "percentages": percentages, "imports": list(imports),
-         "names": list(names)})
+         "names": list(names), "docstrings": list(docstrings)})

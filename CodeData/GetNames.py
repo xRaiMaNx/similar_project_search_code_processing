@@ -18,5 +18,5 @@ def get_names(path: str):
         for line in r:
             for i in line.strip().split():
                 names.add(i)
-    Utils.remove_file(cur_path + "/wabbit_sequences_names_0.txt")
+    #Utils.remove_file(cur_path + "/wabbit_sequences_names_0.txt")
     return names

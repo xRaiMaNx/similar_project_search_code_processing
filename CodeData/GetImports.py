@@ -17,5 +17,5 @@ def get_imports(path: str):
     with open(cur_path + "/wabbit_sequences_imports_0.txt", 'r', encoding='utf-8') as r:
         for line in r:
             imports.add(line.strip())
-    Utils.remove_file(cur_path + "/wabbit_sequences_imports_0.txt")
+    #Utils.remove_file(cur_path + "/wabbit_sequences_imports_0.txt")
     return imports
