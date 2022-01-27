@@ -8,6 +8,7 @@ from threading import Thread
 import json
 import os
 import subprocess
+import git
 
 
 DEFAULT_GIT_INFO = {'stargazers_count': '0', 'commit_sha': '0', 'repo_id': '0'}
@@ -37,16 +38,16 @@ def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     :return: json dump
     """
 
-    cmd = "(cd repos && git clone " + url + ")"
-    p = subprocess.Popen(cmd, shell=True, universal_newlines=True,
-                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    p.wait()
     if url.endswith(".git"):
         url = url[:-4]
     name = url.split("/")[-1].strip('\n')
     owner = url.split("/")[-2]
-    repo_name = owner + "_" + name
-    path = os.path.abspath(os.getcwd()) + "/repos/" + name
+    repo_name = owner + '_' + name
+
+    git.Repo.clone_from('https://null:null@github.com/' + owner + '/' + name,
+                        'repos/' + repo_name)
+    
+    path = os.path.abspath(os.getcwd()) + "/repos/" + repo_name
 
     if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")

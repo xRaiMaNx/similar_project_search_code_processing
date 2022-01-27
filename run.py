@@ -14,7 +14,6 @@ lock = mp.Lock()
 def save_json(data: list, start: int, pool_size: int):
     global count_bad_repos
     for i in range(start, len(data), pool_size):
-        print("worker #", start, " is processing repository #", i, sep='')
         start_time = time.time()
         url = 'https://github.com/' + data[i]['owner'] + '/' + data[i]['name']
         git_info = {'stargazers_count': data[i]['stargazers_count'],
@@ -22,6 +21,8 @@ def save_json(data: list, start: int, pool_size: int):
                     'repo_id': data[i]['repo_id']}
         name = url.split('/')[-1].strip('\n')
         owner = url.split('/')[-2]
+        print("worker #", start, " is processing repository #", i,
+              ' ' + owner + '/' + name, sep='')
         try:
             json_data = GetJSON.get_json(url.strip(), git_info)
             with open('jsons/' + owner + "_" + name + '.json', 'w') as file:
