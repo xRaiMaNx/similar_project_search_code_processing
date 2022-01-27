@@ -13,7 +13,7 @@ lock = mp.Lock()
 
 def save_json(data: list, start: int, pool_size: int):
     global count_bad_repos
-    for i in range(start, 2, pool_size):
+    for i in range(start, len(data), pool_size):
         print("worker #", start, " is processing repository #", i, sep='')
         start_time = time.time()
         url = 'https://github.com/' + data[i]['owner'] + '/' + data[i]['name']
