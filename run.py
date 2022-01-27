@@ -6,8 +6,15 @@ import GetJSON
 
 
 def main() -> None:
+    if not os.path.exists('jsons'):
+        os.mkdir('jsons')
+    repos_path = "repos"
+    if not os.path.exists(repos_path):
+        raise FileNotFoundError(repos_path, "is incorrect path")
+    repos_path = os.path.abspath(repos_path)
     count_bad_repos = 0
     all_time = time.time()
+
     csvs = glob.glob('*.{}'.format('csv'))
     for filename in csvs:
         with open(filename) as csvfile:
@@ -29,12 +36,7 @@ def main() -> None:
                     count_bad_repos += 1
                 totr = time.time() - start_time  # totr -- time on this repository
                 print("--- %s seconds ---" % (totr))
-    if not os.path.exists('jsons'):
-        os.mkdir('jsons')
-    repos_path = "repos"
-    if not os.path.exists(repos_path):
-        raise FileNotFoundError(repos_path, "is incorrect path")
-    repos_path = os.path.abspath(repos_path)
+
     for project_name in os.listdir(repos_path):
         start_time = time.time()
         try:
@@ -46,6 +48,7 @@ def main() -> None:
             count_bad_repos += 1
         totr = time.time() - start_time  # totr -- time on this repository
         print("--- %s seconds ---" % (totr))
+
     with open("./urls.txt", 'r', encoding='utf-8') as urls:
         for url in urls:
             start_time = time.time()

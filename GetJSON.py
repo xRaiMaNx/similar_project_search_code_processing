@@ -10,6 +10,9 @@ import os
 import subprocess
 
 
+DEFAULT_GIT_INFO = {'stargazers_count': '0', 'commit_sha': '0', 'repo_id': '0'}
+
+
 class ThreadWithReturnValue(Thread):
     def __init__(self, group=None, target=None, name=None,
                  args=(), kwargs={}):
@@ -26,10 +29,11 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def get_json(path: str, as_url: bool = False, additional_info=[]):
+def get_json(path: str, as_url: bool = False, git_info: dict = DEFAULT_GIT_INFO):
     """
     :param path: 1) path to file ( ~ doesn't work with os ) or 2) url to github repository
     :param as_url: False (default) - path is treated as 1), True - path is treated as 2)
+    :param git_info: Meta info about repository
     :return: json dump
     """
 
@@ -92,6 +96,6 @@ def get_json(path: str, as_url: bool = False, additional_info=[]):
     data = {"repo_name": repo_name, "readme": readme_content, "languages": languages,
             "percentages": percentages, "imports": list(imports),
             "names": list(names), "docstrings": list(docstrings)}
-    data.update(additional_info)
+    data.update(git_info)
 
     return json.dumps(data)
