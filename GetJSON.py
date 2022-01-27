@@ -1,3 +1,4 @@
+from audioop import add
 from CodeData import Utils
 from LanguagesAndReadme import GetLanguagesAndReadme
 from CodeData import GetImports
@@ -25,7 +26,7 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def get_json(path: str, as_url: bool = False):
+def get_json(path: str, as_url: bool = False, additional_info=[]):
     """
     :param path: 1) path to file ( ~ doesn't work with os ) or 2) url to github repository
     :param as_url: False (default) - path is treated as 1), True - path is treated as 2)
@@ -88,7 +89,9 @@ def get_json(path: str, as_url: bool = False):
     if as_url:
         Utils.remove_dir(path)
 
-    return json.dumps(
-        {"repo_name": repo_name, "readme": readme_content, "languages": languages,
-         "percentages": percentages, "imports": list(imports),
-         "names": list(names), "docstrings": list(docstrings)})
+    data = {"repo_name": repo_name, "readme": readme_content, "languages": languages,
+            "percentages": percentages, "imports": list(imports),
+            "names": list(names), "docstrings": list(docstrings)}
+    data.update(additional_info)
+
+    return json.dumps(data)
