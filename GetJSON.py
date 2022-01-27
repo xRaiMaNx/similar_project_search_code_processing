@@ -1,8 +1,8 @@
-from .CodeData import Utils
-from .LanguagesAndReadme import GetLanguagesAndReadme
-from .CodeData import GetImports
-from .CodeData import GetNames
-from .CodeData import GetDocstrings
+from CodeData import Utils
+from LanguagesAndReadme import GetLanguagesAndReadme
+from CodeData import GetImports
+from CodeData import GetNames
+from CodeData import GetDocstrings
 from threading import Thread
 import json
 import os
@@ -52,6 +52,8 @@ def get_json(path: str, as_url: bool = False):
     if not as_url:
         repo_name = path.split("/")[-1]
 
+    print(repo_name)
+
     lang_and_readme_thread = ThreadWithReturnValue(
         target=GetLanguagesAndReadme.get_languages_and_readme, args=(path, 20,))
     import_thread = ThreadWithReturnValue(
@@ -76,8 +78,6 @@ def get_json(path: str, as_url: bool = False):
     for filename in readme:
         with open(path + "/" + filename, 'r') as file:
             readme_content.append(file.read())
-
-    print(readme)
 
     languages = []
     percentages = []

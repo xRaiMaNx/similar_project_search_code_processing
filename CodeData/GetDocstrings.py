@@ -7,7 +7,7 @@ def get_docstrings(path: str):
     :param path: the path of the project to get all imports in all programs
     :return: set of imports in project
     """
-    cur_path = os.path.abspath(os.getcwd()) + "/pfsp/CodeData"
+    cur_path = os.path.abspath(os.getcwd()) + "/CodeData"
     cmd = "echo " + path + " > " + cur_path + "/path.txt"
     os.system(cmd)
     cmd = "cd " + cur_path + "/buckwheat && python3 -m buckwheat.run --local -i ../path.txt -o ../ -g docstrings"
@@ -26,5 +26,5 @@ def get_docstrings(path: str):
                 continue
             if is_new_el:
                 new_el += line
-    #Utils.remove_file(cur_path + "/wabbit_sequences_docstrings_0.txt")
+    Utils.remove_file(cur_path + "/wabbit_sequences_docstrings_0.txt")
     return docstrings

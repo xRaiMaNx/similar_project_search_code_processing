@@ -7,7 +7,7 @@ def get_imports(path: str):
     :param path: the path of the project to get all imports in all programs
     :return: set of imports in project
     """
-    cur_path = os.path.abspath(os.getcwd()) + "/pfsp/CodeData"
+    cur_path = os.path.abspath(os.getcwd()) + "/CodeData"
     cmd = "echo " + path + " > " + cur_path + "/path.txt"
     os.system(cmd)
     cmd = "cd " + cur_path + "/buckwheat && python3 -m buckwheat.run --local -i ../path.txt -o ../ -g imports"
@@ -17,5 +17,5 @@ def get_imports(path: str):
     with open(cur_path + "/wabbit_sequences_imports_0.txt", 'r', encoding='utf-8') as r:
         for line in r:
             imports.add(line.strip())
-    #Utils.remove_file(cur_path + "/wabbit_sequences_imports_0.txt")
+    Utils.remove_file(cur_path + "/wabbit_sequences_imports_0.txt")
     return imports
