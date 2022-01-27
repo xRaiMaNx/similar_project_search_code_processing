@@ -29,7 +29,7 @@ class ThreadWithReturnValue(Thread):
         return self._return
 
 
-def get_json(path: str, as_url: bool = False, git_info: dict = DEFAULT_GIT_INFO):
+def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     """
     :param path: 1) path to file ( ~ doesn't work with os ) or 2) url to github repository
     :param as_url: False (default) - path is treated as 1), True - path is treated as 2)
@@ -37,36 +37,28 @@ def get_json(path: str, as_url: bool = False, git_info: dict = DEFAULT_GIT_INFO)
     :return: json dump
     """
 
-    repo_name = ""
-    if as_url:
-        if not os.path.exists('repos'):
-            os.mkdir('repos')
-        cmd = "(cd repos && git clone " + path + ")"
-        p = subprocess.Popen(cmd, shell=True, universal_newlines=True,
-                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        p.wait()
-        if path.endswith(".git"):
-            path = path[:-4]
-        repo_name = path
-        path = path.split("/")[-1]
-        path = os.path.abspath(os.getcwd()) + "/repos/" + path
+    cmd = "(cd repos && git clone " + url + ")"
+    p = subprocess.Popen(cmd, shell=True, universal_newlines=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    p.wait()
+    if url.endswith(".git"):
+        url = url[:-4]
+    name = url.split("/")[-1].strip('\n')
+    owner = url.split("/")[-2]
+    repo_name = owner + "_" + name
+    path = os.path.abspath(os.getcwd()) + "/repos/" + name
 
     if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
 
-    if not as_url:
-        repo_name = path.split("/")[-1]
-
-    print(repo_name)
-
     lang_and_readme_thread = ThreadWithReturnValue(
         target=GetLanguagesAndReadme.get_languages_and_readme, args=(path, 20,))
     import_thread = ThreadWithReturnValue(
-        target=GetImports.get_imports, args=(path,))
+        target=GetImports.get_imports, args=(path, repo_name))
     name_thread = ThreadWithReturnValue(
-        target=GetNames.get_names, args=(path,))
+        target=GetNames.get_names, args=(path, repo_name,))
     docstring_thread = ThreadWithReturnValue(
-        target=GetDocstrings.get_docstrings, args=(path,))
+        target=GetDocstrings.get_docstrings, args=(path, repo_name,))
 
     lang_and_readme_thread.start()
     import_thread.start()
@@ -90,10 +82,9 @@ def get_json(path: str, as_url: bool = False, git_info: dict = DEFAULT_GIT_INFO)
         percentages.append(percentage.strip("%"))
         languages.append(language)
 
-    if as_url:
-        Utils.remove_dir(path)
+    Utils.remove_dir(path)
 
-    data = {"repo_name": repo_name, "readme": readme_content, "languages": languages,
+    data = {"owner": owner, "name": name, "readme": readme_content, "languages": languages,
             "percentages": percentages, "imports": list(imports),
             "names": list(names), "docstrings": list(docstrings)}
     data.update(git_info)
