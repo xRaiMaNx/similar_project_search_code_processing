@@ -1,4 +1,5 @@
 import csv
+import datetime
 import glob
 import os
 import time
@@ -21,6 +22,7 @@ def save_json(data: list, start: int, pool_size: int):
                     'repo_id': data[i]['repo_id']}
         name = url.split('/')[-1].strip('\n')
         owner = url.split('/')[-2]
+        print('[', datetime.datetime.now(), ']', sep='', end=' ')
         print("worker #", start, " is processing repository #", i,
               ' ' + owner + '/' + name, sep='')
         try:
@@ -28,11 +30,12 @@ def save_json(data: list, start: int, pool_size: int):
             with open('jsons/' + owner + "_" + name + '.json', 'w') as file:
                 file.write(json_data)    
         except Exception as err:
-            print(err)
+            print('ERROR:', err)
             lock.acquire()
             count_bad_repos += 1
             lock.release()
         totr = time.time() - start_time  # totr -- time on this repository
+        print('[', datetime.datetime.now(), ']', sep='', end=' ')
         print("--- " + owner + "/" + name + ": {:.2f} seconds ---".format(totr))
 
 
@@ -59,6 +62,7 @@ def main() -> None:
             for p in pool:
                 p.join()
 
+    print('[', datetime.datetime.now(), ']', sep='', end=' ')
     print("--- TOTAL TIME: {:.2f} seconds ---".format(time.time() - all_time))
     print("Bad repositories:", count_bad_repos)
 
