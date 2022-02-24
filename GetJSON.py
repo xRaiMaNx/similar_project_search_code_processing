@@ -1,14 +1,11 @@
-from audioop import add
 from CodeData import Utils
 from LanguagesAndReadme import GetLanguagesAndReadme
 from CodeData import GetImports
-from CodeData import GetNames
+from CodeData import GetIdentifiers
 from CodeData import GetDocstrings
 from threading import Thread
 import json
 import os
-import subprocess
-import git
 
 
 DEFAULT_GIT_INFO = {'stargazers_count': '0', 'commit_sha': '0', 'repo_id': '0'}
@@ -43,11 +40,9 @@ def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     name = url.split("/")[-1].strip('\n')
     owner = url.split("/")[-2]
     repo_name = owner + '_' + name
-
-    git.Repo.clone_from('https://null:null@github.com/' + owner + '/' + name,
-                        'repos/' + repo_name)
-    
     path = os.path.abspath(os.getcwd()) + "/repos/" + repo_name
+
+    Utils.download_repo(owner, name, path)
 
     if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
@@ -55,24 +50,23 @@ def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     lang_and_readme_thread = ThreadWithReturnValue(
         target=GetLanguagesAndReadme.get_languages_and_readme, args=(path, 20,))
     import_thread = ThreadWithReturnValue(
-        target=GetImports.get_imports, args=(path, repo_name))
-    name_thread = ThreadWithReturnValue(
-        target=GetNames.get_names, args=(path, repo_name,))
+        target=GetImports.get_imports, args=(path,))
+    identifier_thread = ThreadWithReturnValue(
+        target=GetIdentifiers.get_identifiers, args=(path,))
     docstring_thread = ThreadWithReturnValue(
-        target=GetDocstrings.get_docstrings, args=(path, repo_name,))
+        target=GetDocstrings.get_docstrings, args=(path,))
 
     lang_and_readme_thread.start()
     import_thread.start()
-    name_thread.start()
+    identifier_thread.start()
     docstring_thread.start()
 
     [stats, readme] = lang_and_readme_thread.join()
     imports = import_thread.join()
-    names = name_thread.join()
+    identifiers, splitted_identifiers = identifier_thread.join()
     docstrings = docstring_thread.join()
 
     readme_content = []
-
     for filename in readme:
         with open(path + "/" + filename, 'r') as file:
             readme_content.append(file.read())
@@ -86,8 +80,7 @@ def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     Utils.remove_dir(path)
 
     data = {"owner": owner, "name": name, "readme": readme_content, "languages": languages,
-            "percentages": percentages, "imports": list(imports),
-            "names": list(names), "docstrings": list(docstrings)}
+            "percentages": percentages, "imports": imports, "identifiers": identifiers,
+            "splitted_identifiers": splitted_identifiers, "docstrings": docstrings}
     data.update(git_info)
-
     return json.dumps(data)

@@ -1,46 +1,51 @@
 import csv
-import datetime
 import glob
 import os
 import time
+
 import GetJSON
 import multiprocessing as mp
+from Logging.Logging import LOGGER
 
 
 POOL_SIZE = 8
-count_bad_repos = 0
-lock = mp.Lock()
 
 
-def save_json(data: list, start: int, pool_size: int):
-    global count_bad_repos
-    for i in range(start, len(data), pool_size):
+def save_json(id: int, queue, lock, count_bad_repos):
+    while (True):
+        lock.acquire()
         start_time = time.time()
-        url = 'https://github.com/' + data[i]['owner'] + '/' + data[i]['name']
-        git_info = {'stargazers_count': data[i]['stargazers_count'],
-                    'commit_sha': data[i]['commit_sha'],
-                    'repo_id': data[i]['repo_id']}
+        if not queue:
+            lock.release()
+            break
+        index = len(queue) - 1
+        data = queue.pop()
+        lock.release()
+        url = 'https://github.com/' + data['owner'] + '/' + data['name']
+        git_info = {'stargazers_count': data['stargazers_count'],
+                    'commit_sha': data['commit_sha'],
+                    'repo_id': data['repo_id']}
         name = url.split('/')[-1].strip('\n')
         owner = url.split('/')[-2]
-        print('[', datetime.datetime.now(), ']', sep='', end=' ')
-        print("worker #", start, " is processing repository #", i,
-              ' ' + owner + '/' + name, sep='')
+        LOGGER.info(f"worker#{id}  is processing repository#{index} {owner}/{name}")
         try:
             json_data = GetJSON.get_json(url.strip(), git_info)
             with open('jsons/' + owner + "_" + name + '.json', 'w') as file:
-                file.write(json_data)    
+                file.write(json_data)
         except Exception as err:
-            print('ERROR:', err)
+            LOGGER.error(err)
             lock.acquire()
-            count_bad_repos += 1
+            count_bad_repos.value += 1
             lock.release()
         totr = time.time() - start_time  # totr -- time on this repository
-        print('[', datetime.datetime.now(), ']', sep='', end=' ')
-        print("--- " + owner + "/" + name + ": {:.2f} seconds ---".format(totr))
+        LOGGER.info(f"--- {owner}/{name}: {{:.2f}} seconds ---".format(totr))
 
 
 def main() -> None:
-    global count_bad_repos
+    manager = mp.Manager()
+    queue = manager.list([])
+    count_bad_repos = manager.Value('count_bad_repos', 0)
+    lock = mp.Lock()
 
     if not os.path.exists('jsons'):
         os.mkdir('jsons')
@@ -52,19 +57,17 @@ def main() -> None:
     for filename in csvs:
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
-            data = []
             for dct in reader:
-                data.append(dct)
+                queue.append(dct)
             pool = []
             for i in range(POOL_SIZE):
-                pool.append(mp.Process(target=save_json, args=[data, i, POOL_SIZE]))
+                pool.append(mp.Process(target=save_json, args=[i, queue, lock, count_bad_repos]))
                 pool[-1].start()
             for p in pool:
                 p.join()
 
-    print('[', datetime.datetime.now(), ']', sep='', end=' ')
-    print("--- TOTAL TIME: {:.2f} seconds ---".format(time.time() - all_time))
-    print("Bad repositories:", count_bad_repos)
+    LOGGER.info("--- TOTAL TIME: {:.2f} seconds ---".format(time.time() - all_time))
+    LOGGER.info(f"Bad repositories: {count_bad_repos.value}")
 
 
 if __name__ == "__main__":
