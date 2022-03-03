@@ -2,6 +2,7 @@ from toolz import identity
 from preprocess.mappers.files import extract_identifiers_from_file
 from collections import Counter
 from .CustomSource import CustomSource
+import re
 
 
 def get_identifiers(path: str):
@@ -21,4 +22,7 @@ def get_identifiers(path: str):
     identifiers_list = []
     for _, identifiers in file_identifiers:
         identifiers_list += [i.body for i in identifiers]
-    return [dict(Counter(identifiers_list)), dict(Counter(j for i in identifiers_list for j in i.split('_')))]
+        
+    return [dict(Counter(identifiers_list)),
+            dict(Counter(j for i in identifiers_list for j in re.sub('([A-Z][a-z]+)',
+            r' \1', re.sub('([A-Z]+)', r' \1', re.sub('(_)', ' ', i))).split()))]
