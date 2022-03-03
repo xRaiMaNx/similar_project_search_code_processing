@@ -2,10 +2,14 @@ import csv
 import glob
 import os
 import time
+import sys
+import traceback
 
 import GetJSON
 import multiprocessing as mp
 from Logging.Logging import LOGGER
+
+from CodeData import Utils
 
 
 POOL_SIZE = 8
@@ -27,18 +31,23 @@ def save_json(id: int, queue, lock, count_bad_repos):
                     'repo_id': data['repo_id']}
         name = url.split('/')[-1].strip('\n')
         owner = url.split('/')[-2]
-        LOGGER.info(f"worker#{id}  is processing repository#{index} {owner}/{name}")
-        try:
+        LOGGER.info(f"worker#{id} is processing repository#{index} {owner}/{name}")
+        try:    
             json_data = GetJSON.get_json(url.strip(), git_info)
             with open('jsons/' + owner + "_" + name + '.json', 'w') as file:
                 file.write(json_data)
         except Exception as err:
-            LOGGER.error(err)
+            LOGGER.error(f'{owner}/{name}: {err}')
+            traceback.print_exc()
             lock.acquire()
             count_bad_repos.value += 1
             lock.release()
+            totr = time.time() - start_time  # totr -- time on this repository
+            LOGGER.info(f"--- ERROR {owner}/{name}: {{:.2f}} seconds ---".format(totr))
+            Utils.remove_dir(f'{os.path.abspath(os.getcwd())}/repos/{owner}_{name}')
+            continue
         totr = time.time() - start_time  # totr -- time on this repository
-        LOGGER.info(f"--- {owner}/{name}: {{:.2f}} seconds ---".format(totr))
+        LOGGER.info(f"--- SUCCESS {owner}/{name}: {{:.2f}} seconds ---".format(totr))
 
 
 def main() -> None:

@@ -1,7 +1,7 @@
 from toolz import identity
-from preprocess.sources import FolderSource
 from preprocess.mappers.files import extract_identifiers_from_file
 from collections import Counter
+from .CustomSource import CustomSource
 
 
 def get_identifiers(path: str):
@@ -11,7 +11,7 @@ def get_identifiers(path: str):
     """
 
     file_identifiers = (
-        FolderSource(path)
+        CustomSource(path)
         .files_chain
         .juxt(identity, extract_identifiers_from_file)
         .filter(lambda tpl: len(tpl[1]))

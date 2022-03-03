@@ -1,29 +1,28 @@
-from . import Types
+from . import Tokens
+from typing import List
 
 from preprocess.mappers.files.base import compose_base_extractors, build_pygments_extractors_from_spec
-from preprocess.mappers.files.tree_sitter import build_ts_extractors_from_spec
-from preprocess.sources import FolderSource
+from .CustomSource import CustomSource
 
 
-def get_docstrings(path: str):
+def get_docstrings(path: str) -> List[str]:
     """
     :param path: the path of the project to get all docstrings
     :return: list of docstrings
     """
 
-    comments_extractor = compose_base_extractors([
-        *build_pygments_extractors_from_spec(Types.COMMENTS_PYGMENTS),
-        *build_ts_extractors_from_spec(Types.COMMENTS_TREE_SITTER),
+    docstrings_extractor = compose_base_extractors([
+        *build_pygments_extractors_from_spec(Tokens.DOCSTRINGS_PYGMENTS),
     ])
 
-    comments_entities = (
-        FolderSource(path)
+    docstring_entities = (
+        CustomSource(path)
         .files_chain
-        .flat_map(comments_extractor)
+        .flat_map(docstrings_extractor)
         .elements()
     )
 
     docstrings = []
-    for comment_entity in comments_entities:
-        docstrings.append(comment_entity.body)
+    for docstring_entity in docstring_entities:
+        docstrings.append(docstring_entity.body)
     return docstrings
