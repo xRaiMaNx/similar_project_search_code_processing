@@ -30,25 +30,14 @@ def get_json(url: str, git_info: dict = DEFAULT_GIT_INFO):
     if not os.path.exists(path):
         raise FileNotFoundError(path, "is incorrect path")
 
-    [stats, readme] = GetLanguagesAndReadme.get_languages_and_readme(path, 20)
+    languages, percentages, readme = GetLanguagesAndReadme.get_languages_and_readme(path, 20)
     imports = GetImports.get_imports(path)
     identifiers, splitted_identifiers = GetIdentifiers.get_identifiers(path)
     docstrings = GetDocstrings.get_docstrings(path)
-
-    readme_content = []
-    for filename in readme:
-        with open(path + "/" + filename, 'r') as file:
-            readme_content.append(file.read())
-
-    languages = []
-    percentages = []
-    for percentage, language in stats:
-        percentages.append(percentage.strip("%"))
-        languages.append(language)
-        
+     
     Utils.remove_dir(path)
 
-    data = {"owner": owner, "name": name, "readme": readme_content, "languages": languages,
+    data = {"owner": owner, "name": name, "readme": readme, "languages": languages,
             "percentages": percentages, "imports": imports, "identifiers": identifiers,
             "splitted_identifiers": splitted_identifiers, "docstrings": docstrings}
     data.update(git_info)
