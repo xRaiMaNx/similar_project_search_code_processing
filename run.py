@@ -31,8 +31,8 @@ def save_json(id: int, queue, lock, count_bad_repos):
                     'repo_id': data['repo_id']}
         name = url.split('/')[-1].strip('\n')
         owner = url.split('/')[-2]
-        LOGGER.info(f"worker#{id} is processing repository#{index} {owner}/{name}")
-        try:    
+        LOGGER.info(f"{owner}/{name}: started processing repository#{index}")
+        try:
             json_data = GetJSON.get_json(url.strip(), git_info)
             with open('jsons/' + owner + "_" + name + '.json', 'w') as file:
                 file.write(json_data)
@@ -43,11 +43,11 @@ def save_json(id: int, queue, lock, count_bad_repos):
             count_bad_repos.value += 1
             lock.release()
             totr = time.time() - start_time  # totr -- time on this repository
-            LOGGER.info(f"--- ERROR {owner}/{name}: {{:.2f}} seconds ---".format(totr))
+            LOGGER.error(f"{owner}/{name}: ERROR: {{:.2f}} seconds ---".format(totr))
             Utils.remove_dir(f'{os.path.abspath(os.getcwd())}/repos/{owner}_{name}')
             continue
         totr = time.time() - start_time  # totr -- time on this repository
-        LOGGER.info(f"--- SUCCESS {owner}/{name}: {{:.2f}} seconds ---".format(totr))
+        LOGGER.info(f"{owner}/{name}: SUCCESS: {{:.2f}} seconds ---".format(totr))
 
 
 def main() -> None:

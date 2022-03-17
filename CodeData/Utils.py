@@ -36,4 +36,5 @@ def download_repo(owner: str, name: str, path: str):
     remove_dir(path)
     git.Repo.clone_from('https://null:null@github.com/' + owner + '/' + name,
                         path)
-    LOGGER.info(f"{owner}/{name} download time: {time.time() - start_time}")
+    LOGGER.info(f"{owner}/{name}: download time: {{:.2f}} seconds".format(time.time() - start_time))
+
